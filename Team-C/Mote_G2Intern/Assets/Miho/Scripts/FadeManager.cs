@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 using System.Linq;
@@ -104,18 +104,30 @@ public class FadeManager : MonoBehaviour
 	/// 画面遷移 .
 	/// </summary>
 	/// <param name='scene'>シーン名</param>
-	/// <param name='interval'>暗転にかかる時間(秒)</param>
-	public void LoadScene (string scene, float interval)
+	/// <param name='fadeInTime'>暗転にかかる時間(秒)</param>
+	/// <param name='fadeOutTime'>暗転にかかる時間(秒)</param>
+	public void LoadScene (string scene, float fadeInTime, float fadeOutTime)
 	{
-		StartCoroutine (TransScene (scene, interval));
+		StartCoroutine (TransScene (scene, fadeInTime, fadeOutTime));
+	}
+
+	/// <summary>
+	/// 画面遷移 .
+	/// </summary>
+	/// <param name='scene'>シーン名</param>
+	/// <param name='fadeInTime'>暗転にかかる時間(秒)</param>
+	public void LoadScene (string scene, float fadeTime)
+	{
+		StartCoroutine (TransScene (scene, fadeTime, fadeTime));
 	}
 
 	/// <summary>
 	/// シーン遷移用コルーチン .
 	/// </summary>
 	/// <param name='scene'>シーン名</param>
-	/// <param name='interval'>暗転にかかる時間(秒)</param>
-	private IEnumerator TransScene (string scene, float interval)
+	/// <param name='fadeInTime'>暗転にかかる時間(秒)</param>
+	/// <param name='fadeOutTime'>暗転にかかる時間(秒)</param>
+	private IEnumerator TransScene (string scene, float fadeInTime, float fadeOutTime)
 	{
 		var operation = SceneManager.LoadSceneAsync(scene);
 	        operation.allowSceneActivation = false;
@@ -123,8 +135,8 @@ public class FadeManager : MonoBehaviour
 		//だんだん暗く .
 		this.isFading = true;
 		float time = 0;
-		while (time <= interval) {
-			this.fadeAlpha = Mathf.Lerp (0f, 1f, time / interval);
+		while (time <= fadeInTime) {
+			this.fadeAlpha = Mathf.Lerp (0f, 1f, time / fadeInTime);
 			time += Time.deltaTime;
 			yield return 0;
 		}
@@ -134,8 +146,8 @@ public class FadeManager : MonoBehaviour
 
 		//だんだん明るく .
 		time = 0;
-		while (time <= interval) {
-			this.fadeAlpha = Mathf.Lerp (1f, 0f, time / interval);
+		while (time <= fadeOutTime) {
+			this.fadeAlpha = Mathf.Lerp (1f, 0f, time / fadeOutTime);
 			time += Time.deltaTime;
 			yield return 0;
 		}
